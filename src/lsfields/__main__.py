@@ -3,6 +3,7 @@
 import argparse
 import logging
 import os
+import urllib.parse
 from typing import Generator
 
 import pyarrow.parquet
@@ -17,12 +18,17 @@ logger = logging.getLogger(__name__)
 
 AWS_PROFILE = os.getenv('AWS_PROFILE', 'default')
 
+session: boto3.session.Session = None
+'AWS connection session'
+s3_client = None
+'AWS S3 service client'
+
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-l', '--loglevel', default='WARNING')
-    parser.add_argument('bucket')
+    parser.add_argument('bucket', help='S3 bucket location URI')
     parser.add_argument('--prefix', required=False, default='')
     parser.add_argument('--no-sign-request', action='store_true')
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
@@ -40,19 +46,18 @@ def get_parquet_column_names(bucket: str, key: str):
     return dataset.schema.names
 
 
-def list_parquet_files(session: boto3.session.Session, bucket: str, prefix: str = None) -> Generator[str, None, None]:
+def list_parquet_files(s3_client, bucket: str, prefix: str = None) -> Generator[str, None, None]:
     """
     This function yields the S3 key (path) of parquet files in an S3 bucket as a generator.
 
     Args:
-        session: AWS session
+        s3_client: AWS S3 service client
         bucket: The name of the S3 bucket to search (str).
         prefix: Folder
 
     Yields:
         The S3 key (path) of each parquet file found (str).
     """
-    s3_client = session.client('s3')
     paginator = s3_client.get_paginator("list_objects_v2")
 
     logger.info("%s/%s", bucket, prefix)
@@ -65,6 +70,9 @@ def list_parquet_files(session: boto3.session.Session, bucket: str, prefix: str 
 
 
 def main():
+    global session
+    global s3_client
+
     args = get_args()
     logging.basicConfig(
         format="%(name)s:%(asctime)s:%(levelname)s:%(message)s",
@@ -73,9 +81,10 @@ def main():
 
     # Connect to AWS
     # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/session.html
-    with boto3.session.Session(profile_name=args.profile) as session:
-        for file in list_parquet_files(session, args.bucket, prefix=args.prefix):
-            print(file)
+    session = boto3.session.Session(profile_name=args.profile)
+    s3_client = session.client('s3')
+    for file in list_parquet_files(s3_client, args.bucket, prefix=args.prefix):
+        print(file)
 
 
 if __name__ == '__main__':
