@@ -2,22 +2,21 @@
 
 import argparse
 import logging
-from typing import Generator, Optional
+from typing import Generator
 
 import pyarrow.parquet
 import boto3
 
 DESCRIPTION = """
-"""
-
-USAGE = """
+This will list all the field names for all the data sets
+in a bucket on AWS S3 object storage.
 """
 
 logger = logging.getLogger(__name__)
 
 
 def get_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description=DESCRIPTION, usage=USAGE)
+    parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-l', '--loglevel', default='WARNING')
     parser.add_argument('bucket')
@@ -31,7 +30,7 @@ def get_parquet_column_names(bucket: str, key: str):
 
     """
     # Use pyarrow to access the ParquetDataset
-    dataset = arrow.parquet.ParquetDataset(f"s3://{bucket}/{key}")
+    dataset = pyarrow.parquet.ParquetDataset(f"s3://{bucket}/{key}")
 
     # Get column names from schema
     return dataset.schema.names
@@ -69,8 +68,6 @@ def main():
 
     for file in list_parquet_files(args.bucket, prefix=args.prefix):
         print(file)
-
-    raise NotImplementedError
 
 
 if __name__ == '__main__':
