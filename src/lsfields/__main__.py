@@ -2,6 +2,7 @@
 
 import argparse
 import logging
+import os
 from typing import Generator
 
 import pyarrow.parquet
@@ -14,6 +15,8 @@ in a bucket on AWS S3 object storage.
 
 logger = logging.getLogger(__name__)
 
+AWS_PROFILE = os.getenv('AWS_PROFILE', 'default')
+
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=DESCRIPTION)
@@ -22,6 +25,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('bucket')
     parser.add_argument('--prefix', required=False, default='')
     parser.add_argument('--no-sign-request', action='store_true')
+    parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
     return parser.parse_args()
 
 
@@ -36,18 +40,19 @@ def get_parquet_column_names(bucket: str, key: str):
     return dataset.schema.names
 
 
-def list_parquet_files(bucket: str, prefix: str = None) -> Generator[str, None, None]:
+def list_parquet_files(session: boto3.session.Session, bucket: str, prefix: str = None) -> Generator[str, None, None]:
     """
     This function yields the S3 key (path) of parquet files in an S3 bucket as a generator.
 
     Args:
+        session: AWS session
         bucket: The name of the S3 bucket to search (str).
         prefix: Folder
 
     Yields:
         The S3 key (path) of each parquet file found (str).
     """
-    s3_client = boto3.client("s3")
+    s3_client = session.client('s3')
     paginator = s3_client.get_paginator("list_objects_v2")
 
     logger.info("%s/%s", bucket, prefix)
@@ -66,8 +71,11 @@ def main():
         level=logging.INFO if args.verbose else args.loglevel
     )
 
-    for file in list_parquet_files(args.bucket, prefix=args.prefix):
-        print(file)
+    # Connect to AWS
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/session.html
+    with boto3.session.Session(profile_name=args.profile) as session:
+        for file in list_parquet_files(session, args.bucket, prefix=args.prefix):
+            print(file)
 
 
 if __name__ == '__main__':
