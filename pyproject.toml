@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "metadata_generator.__version__"}
+version = {attr = "lsfields.__version__"}
 
 # Executable scripts
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
