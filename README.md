@@ -1,19 +1,19 @@
-# Metadata generator
+# CUREd+ metadata generator
 
-CUREd+ metadata generator
+The CUREd+ metadata generator tool generates a list of all the columns in every table in the database.
 
 # Installation
 
+```bash
+pip install curedcolumns
+```
+
 # Usage
+
+```bash
+curedcolumns --help
+```
 
 # Development
 
-## Emulated S3 bucket
-
-https://s3ninja.net/
-
-The test data should be mounted to `/home/sirius/data` 
-
-```bash
-docker run --volume /home/sirius/data:/tmp/sirius/data --publish 9444:9000 scireum/s3-ninja:latest
-```
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
