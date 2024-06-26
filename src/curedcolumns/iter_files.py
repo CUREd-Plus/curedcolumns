@@ -31,14 +31,11 @@ def iter_files(s3_client: Client, bucket: str, prefix: str = None, file_ext: str
     # https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html
     paginator = s3_client.get_paginator("list_objects_v2")
 
-    logger.info("%s/%s", bucket, prefix)
-
     # Iterate over pages
     for page in paginator.paginate(Bucket=bucket, Prefix=prefix, **kwargs):
 
         # Loop through S3 objects (files)
         for obj in page.get("Contents", set()):
-            logger.debug(obj)
             s3_key = PosixPath(obj["Key"])
             if s3_key.suffix == file_ext:
                 yield s3_key

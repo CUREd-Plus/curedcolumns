@@ -72,7 +72,7 @@ def main():
 
     # Iterate over all files
     for path in iter_files(s3_client, args.bucket, prefix=args.prefix):
-        logger.info(path)
+        # Parse the path structure
         data_set_id, table_id = path.relative_to(args.prefix).parts[0:2]
 
         # Check the directory structure is correct
