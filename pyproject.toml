@@ -10,6 +10,14 @@ dependencies = [
   "pyarrow==16.*"
 ]
 
+[project.optional-dependencies]
+dev = [
+    "boto3-type-annotations==0.*"
+]
+test = [
+    "pytest==8.*"
+]
+
 [tool.setuptools.dynamic]
 version = {attr = "curedcolumns.__version__"}
 

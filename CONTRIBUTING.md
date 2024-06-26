@@ -17,5 +17,5 @@ source .venv/bin/activate
 Install the package in editable mode
 
 ```bash
-pip install --editable .
+pip install --editable .[dev]
 ```

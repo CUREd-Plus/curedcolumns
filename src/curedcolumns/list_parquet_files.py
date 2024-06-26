@@ -1,10 +1,12 @@
 import logging
 from typing import Generator
 
+from boto3_type_annotations.s3 import Client
+
 logger = logging.getLogger(__name__)
 
 
-def list_parquet_files(s3_client, bucket: str, prefix: str = None) -> Generator[str, None, None]:
+def list_parquet_files(s3_client: Client, bucket: str, prefix: str = None) -> Generator[str, None, None]:
     """
     This function yields the S3 key (path) of parquet files in an S3 bucket as a generator.
 
@@ -16,6 +18,9 @@ def list_parquet_files(s3_client, bucket: str, prefix: str = None) -> Generator[
     Yields:
         The S3 key (path) of each parquet file found (str).
     """
+    # Use a paginator to list objects
+    # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/paginators.html
+    # https://docs.aws.amazon.com/AmazonS3/latest/API/API_ListObjectsV2.html
     paginator = s3_client.get_paginator("list_objects_v2")
 
     logger.info("%s/%s", bucket, prefix)
