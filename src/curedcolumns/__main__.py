@@ -11,11 +11,10 @@ import boto3
 
 import curedcolumns
 from curedcolumns.exceptions import CuredFileNotFoundError
-from curedcolumns.iter_files import iter_files
-from curedcolumns.get_parquet_column_names import get_s3_parquet_schema
 
 DESCRIPTION = """
-List all the field names for all the data sets in a bucket on AWS S3 object storage.
+List all the field names for all the data sets in a bucket on AWS S3 object storage and display the metadata in CSV
+format.
 
 This assumes a folder structure in this layout:
 <data_set_id>/<table_id>/data/*.parquet
@@ -72,32 +71,35 @@ def main():
     writer.writeheader()
 
     # Iterate over all files
-    for path in iter_files(s3_client, args.bucket, prefix=args.prefix):
+    for path in curedcolumns.iter_files(s3_client, args.bucket, prefix=args.prefix):
         # Parse the path structure
+        # It should be /<data_set_id>/<table_id>/data/*.parquet
         data_set_id, table_id = path.relative_to(args.prefix).parts[0:2]
 
+        # Check the directory structure is correct
         try:
-            # Check the directory structure is correct
             if 'data' in {data_set_id, table_id}:
                 raise CuredFileNotFoundError(path)
             data_path = path.parent
             if data_path.name != 'data':
                 raise CuredFileNotFoundError(path)
         except CuredFileNotFoundError:
+            # Describe the problem
             logger.error("The data set or table does not exist at %s", path)
             logger.warning("Expecting: ./<data_set_id>/<table_id>/data/*.parquet")
             exit()
 
-        # If we already processed this, then skip to the next file
+        # Keep track of the ones we've already looked at
         if data_path in data_paths:
+            # If we already processed this, then skip to the next file
             continue
+        else:
+            data_paths.add(data_path)
 
         logger.info("Data set ID: %s\tTable ID %s", data_set_id, table_id)
 
-        data_paths.add(data_path)
-
         # Get column names
-        schema = get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session)
+        schema = curedcolumns.get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session)
         for column in schema:
             row = dict(
                 data_set_id=data_set_id,

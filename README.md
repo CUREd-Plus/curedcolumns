@@ -1,3 +1,5 @@
+[![Tests passing](https://github.com/CUREd-Plus/curedcolumns/actions/workflows/test.yml/badge.svg)](https://github.com/CUREd-Plus/curedcolumns/actions/workflows/test.yml)
+
 # CUREd+ metadata generator
 
 The CUREd+ metadata generator tool generates a list of all the columns in every table in the database.
