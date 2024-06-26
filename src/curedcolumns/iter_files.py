@@ -35,6 +35,7 @@ def iter_files(s3_client: Client, bucket: str, prefix: str = None, file_ext: str
 
         # Loop through S3 objects (files)
         for obj in page.get("Contents", set()):
-            s3_key: str = obj["Key"]
-            if s3_key.endswith(file_ext):
-                yield PosixPath(s3_key)
+            logger.debug(obj)
+            s3_key = PosixPath(obj["Key"])
+            if s3_key.suffix == file_ext:
+                yield s3_key

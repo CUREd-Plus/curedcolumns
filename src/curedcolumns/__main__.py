@@ -52,6 +52,7 @@ def main():
     'AWS S3 service client'
 
     for path in iter_files(s3_client, args.bucket, prefix=args.prefix):
+        logger.info(path)
         data_set_id = path[0]
         table_id = path[1]
 
