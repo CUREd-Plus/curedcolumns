@@ -6,7 +6,7 @@ import os
 
 import boto3
 
-from curedcolumns.list_parquet_files import list_files
+from curedcolumns.list_parquet_files import iter_files
 
 DESCRIPTION = """
 This will list all the field names for all the data sets
@@ -51,8 +51,11 @@ def main():
     s3_client = session.client('s3')
     'AWS S3 service client'
 
-    for file in list_files(s3_client, args.bucket, prefix=args.prefix):
-        print(file)
+    for path in iter_files(s3_client, args.bucket, prefix=args.prefix):
+        data_set_id = path[0]
+        table_id = path[1]
+
+        print(data_set_id, table_id, sep='\t')
 
 
 if __name__ == '__main__':
