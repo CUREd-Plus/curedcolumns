@@ -66,10 +66,10 @@ def main():
     for path in iter_files(s3_client, args.bucket, prefix=args.prefix):
         logger.info(path)
         data_set_id, table_id = path.relative_to(args.prefix).parts[0:2]
-        logger.info("Data set ID: %s\ttable ID %s", data_set_id, table_id)
 
-        # Get path of table data
-        # This assumes that the parquet files are in a d
+        # Check the directory structure is correct
+        if 'data' in {data_set_id, table_id}:
+            raise ValueError(path)
         data_path = path.parent
         if data_path.name != 'data':
             raise ValueError(path)
@@ -77,6 +77,8 @@ def main():
         # If we already processed this, then skip to the next file
         if data_path in data_paths:
             continue
+
+        logger.info("Data set ID: %s\tTable ID %s", data_set_id, table_id)
 
         data_paths.add(data_path)
 
