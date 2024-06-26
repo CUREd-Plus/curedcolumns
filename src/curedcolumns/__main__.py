@@ -6,7 +6,7 @@ import os
 
 import boto3
 
-from curedcolumns.list_parquet_files import list_parquet_files
+from curedcolumns.list_parquet_files import list_files
 
 DESCRIPTION = """
 This will list all the field names for all the data sets
@@ -30,7 +30,8 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-l', '--loglevel', default='WARNING')
     parser.add_argument('bucket', type=bucket_name, help='S3 bucket location URI')
-    parser.add_argument('--prefix', required=False, default='')
+    parser.add_argument('--prefix', required=False,
+                        default='Limits the response to keys that begin with the specified prefix.')
     parser.add_argument('--no-sign-request', action='store_true')
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
     return parser.parse_args()
@@ -50,7 +51,7 @@ def main():
     s3_client = session.client('s3')
     'AWS S3 service client'
 
-    for file in list_parquet_files(s3_client, args.bucket, prefix=args.prefix):
+    for file in list_files(s3_client, args.bucket, prefix=args.prefix):
         print(file)
 
 
