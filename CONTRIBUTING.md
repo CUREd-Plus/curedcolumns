@@ -2,16 +2,19 @@
 
 Use an IDE such as PyCharm or Visual Studio Code
 
-Create a virtual environment
+Create a [virtual environment](https://docs.python.org/3/library/venv.html)
 
 ```bash
 python -m venv .venv
 ```
 
-Activate the virtual environment
+Activate the virtual environment:
 
 ```bash
+# On Linux
 source .venv/bin/activate
+# On Windows
+.venv\Scripts\activate
 ```
 
 ## Install package during development
