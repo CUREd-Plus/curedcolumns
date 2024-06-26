@@ -22,18 +22,18 @@ logger = logging.getLogger(__name__)
 AWS_PROFILE = os.getenv('AWS_PROFILE', 'default')
 
 
-def bucket_name(s: str) -> str:
+def bucket_str(bucket: str) -> str:
     """
     Remove URL prefix from the bucket name string
     """
-    return s.lstrip('s3://')
+    return bucket.lstrip('s3://')
 
 
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('-l', '--loglevel', default='WARNING')
-    parser.add_argument('bucket', type=bucket_name, help='S3 bucket location URI')
+    parser.add_argument('bucket', type=bucket_str, help='S3 bucket location URI')
     parser.add_argument('--prefix', required=False, default='',
                         help='Limits the response to keys that begin with the specified prefix.')
     parser.add_argument('--no-sign-request', action='store_true')

@@ -16,20 +16,12 @@ source .venv/bin/activate
 
 ## Install package during development
 
-### Local machine
+Clone the code repository. 
 
-Install the package in editable mode
+Install the package in editable mode using [`pip install`](https://pip.pypa.io/en/stable/cli/pip_install/):
 
 ```bash
 pip install --editable .[test]
-```
-
-### Remote machine
-
-Install from GitHub using [pip install](https://pip.pypa.io/en/stable/cli/pip_install/):
-
-```bash
-pip install --force git+https://github.com/CUREd-Plus/curedcolumns.git
 ```
 
 ## Testing
