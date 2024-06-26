@@ -22,10 +22,19 @@ def aws_credentials():
 
 
 @pytest.fixture(scope="function")
-def s3_client(aws_credentials):
+def s3_client(session):
     """
     Mock AWS S3 Client
     """
 
     with moto.mock_aws():
-        yield boto3.client('s3')
+        yield session.client('s3')
+
+
+@pytest.fixture(scope="function")
+def session(aws_credentials):
+    """
+    Mock AWS session
+    """
+    with moto.mock_aws():
+        yield boto3.Session()
