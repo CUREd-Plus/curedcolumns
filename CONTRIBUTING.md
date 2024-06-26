@@ -14,8 +14,20 @@ Activate the virtual environment
 source .venv/bin/activate
 ```
 
+## Install package during development
+
+### Local machine
+
 Install the package in editable mode
 
 ```bash
 pip install --editable .[dev]
+```
+
+### Remote machine
+
+Install from GitHub
+
+```bash
+pip install git+https://github.com/CUREd-Plus/curedcolumns.git
 ```
