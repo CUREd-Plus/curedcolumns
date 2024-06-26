@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import argparse
+import csv
 import logging
 import os
 import pathlib
+import sys
 
 import boto3
 
@@ -21,6 +23,8 @@ This assumes a folder structure in this layout:
 logger = logging.getLogger(__name__)
 
 AWS_PROFILE = os.getenv('AWS_PROFILE', 'default')
+
+HEADERS = ('data_set_id', 'table_id', 'column_name', 'data_type')
 
 
 def bucket_str(bucket: str) -> str:
@@ -62,6 +66,10 @@ def main():
     # Store the data directories we've already looked at
     data_paths: set[pathlib.Path] = set()
 
+    # Show CSV header
+    writer = csv.DictWriter(sys.stdout, fieldnames=HEADERS)
+    writer.writeheader()
+
     # Iterate over all files
     for path in iter_files(s3_client, args.bucket, prefix=args.prefix):
         logger.info(path)
@@ -85,7 +93,13 @@ def main():
         # Get column names
         schema = get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session)
         for column in schema:
-            print(data_set_id, table_id, column.name, column.type, sep=args.delimiter)
+            row = dict(
+                data_set_id=data_set_id,
+                table_id=table_id,
+                column_name=column.name,
+                data_type=column.type
+            )
+            writer.writerow(row)
 
 
 if __name__ == '__main__':
