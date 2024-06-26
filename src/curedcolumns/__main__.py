@@ -41,6 +41,7 @@ def get_args() -> argparse.Namespace:
                         help='Limits the response to keys that begin with the specified prefix.')
     parser.add_argument('--no-sign-request', action='store_true')
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
+    parser.add_argument('-d', '--delimiter', default=',', help='Column separator character')
     return parser.parse_args()
 
 
@@ -80,8 +81,9 @@ def main():
         data_paths.add(data_path)
 
         # Get column names
-        for schema in get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session):
-            print(schema)
+        schema = get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session)
+        for column in schema:
+            print(data_set_id, table_id, column.name, column.type, sep=args.delimiter)
 
 
 if __name__ == '__main__':
