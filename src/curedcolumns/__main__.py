@@ -77,7 +77,7 @@ def main():
         data_paths.add(data_path)
 
         # Get column names
-        for schema in get_s3_parquet_schema(args.bucket, key=data_path):
+        for schema in get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session):
             print(schema)
 
 
