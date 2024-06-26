@@ -14,6 +14,14 @@ pip install curedcolumns
 curedcolumns --help
 ```
 
+## Example
+
+Use the [AWS CLI](https://docs.aws.amazon.com/cli/v1/userguide/) profile named "clean"
+
+```bash
+curedcolumns --profile clean s3://my_bucket.aws.com
+```
+
 # Development
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).

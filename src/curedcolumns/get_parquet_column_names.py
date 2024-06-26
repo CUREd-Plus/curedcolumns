@@ -29,7 +29,7 @@ def get_s3_parquet_schema(session, bucket: str, key: Union[str, Path]) -> pyarro
     )
 
     # Build data set location
-    uri = f"s3://{bucket}/{key}/*.parquet"
+    uri = f"{bucket}/{key}/*.parquet"
     logger.info(uri)
 
     # Use pyarrow to access the metadata
