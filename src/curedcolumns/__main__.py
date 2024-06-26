@@ -6,7 +6,7 @@ import os
 
 import boto3
 
-from curedcolumns.list_parquet_files import iter_files
+from curedcolumns.iter_files import iter_files
 
 DESCRIPTION = """
 This will list all the field names for all the data sets

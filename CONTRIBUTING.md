@@ -29,7 +29,7 @@ pip install --editable .[test]
 Install from GitHub
 
 ```bash
-pip install git+https://github.com/CUREd-Plus/curedcolumns.git
+pip install --force git+https://github.com/CUREd-Plus/curedcolumns.git
 ```
 
 ## Testing
