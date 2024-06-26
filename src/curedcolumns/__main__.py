@@ -10,6 +10,7 @@ import sys
 import boto3
 
 import curedcolumns
+from curedcolumns.exceptions import CuredFileNotFoundError
 from curedcolumns.iter_files import iter_files
 from curedcolumns.get_parquet_column_names import get_s3_parquet_schema
 
@@ -75,12 +76,17 @@ def main():
         # Parse the path structure
         data_set_id, table_id = path.relative_to(args.prefix).parts[0:2]
 
-        # Check the directory structure is correct
-        if 'data' in {data_set_id, table_id}:
-            raise ValueError(path)
-        data_path = path.parent
-        if data_path.name != 'data':
-            raise ValueError(path)
+        try:
+            # Check the directory structure is correct
+            if 'data' in {data_set_id, table_id}:
+                raise CuredFileNotFoundError(path)
+            data_path = path.parent
+            if data_path.name != 'data':
+                raise CuredFileNotFoundError(path)
+        except CuredFileNotFoundError:
+            logger.error("The data set or table does not exist at %s", path)
+            logger.warning("Expecting: ./<data_set_id>/<table_id>/data/*.parquet")
+            exit()
 
         # If we already processed this, then skip to the next file
         if data_path in data_paths:
