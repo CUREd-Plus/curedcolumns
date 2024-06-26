@@ -21,7 +21,7 @@ source .venv/bin/activate
 Install the package in editable mode
 
 ```bash
-pip install --editable .[dev]
+pip install --editable .[test]
 ```
 
 ### Remote machine
@@ -30,4 +30,12 @@ Install from GitHub
 
 ```bash
 pip install git+https://github.com/CUREd-Plus/curedcolumns.git
+```
+
+## Testing
+
+Tests are located in the `tests/` directory.
+
+```bash
+pytest
 ```

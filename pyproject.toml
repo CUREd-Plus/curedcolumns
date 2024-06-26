@@ -6,20 +6,18 @@ build-backend = "setuptools.build_meta"
 name = "curedcolumns"
 dynamic = ["version"]
 dependencies = [
-  "boto3==1.*",
-  "pyarrow==16.*"
+    "boto3==1.*",
+    "pyarrow==16.*",
+    "boto3-type-annotations==0.*"
 ]
 
 [project.optional-dependencies]
-dev = [
-    "boto3-type-annotations==0.*"
-]
 test = [
     "pytest==8.*"
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "curedcolumns.__version__"}
+version = { attr = "curedcolumns.__version__" }
 
 # Executable scripts
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
