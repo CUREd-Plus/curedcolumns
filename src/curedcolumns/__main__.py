@@ -7,6 +7,7 @@ import pathlib
 
 import boto3
 
+import curedcolumns
 from curedcolumns.iter_files import iter_files
 from curedcolumns.get_parquet_column_names import get_s3_parquet_schema
 
@@ -32,6 +33,8 @@ def bucket_str(bucket: str) -> str:
 def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=DESCRIPTION)
     parser.add_argument('-v', '--verbose', action='store_true')
+    parser.add_argument('--version', action='version', version='%(prog)s ' + curedcolumns.__version__,
+                        help='Show the version number of this tool')
     parser.add_argument('-l', '--loglevel', default='WARNING')
     parser.add_argument('bucket', type=bucket_str, help='S3 bucket location URI')
     parser.add_argument('--prefix', required=False, default='',

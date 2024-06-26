@@ -38,4 +38,3 @@ def get_s3_parquet_schema(session, bucket: str, key: Union[str, Path]) -> pyarro
 
     # https://arrow.apache.org/cookbook/py/schema.html
     return data_set.schema
-*
