@@ -21,7 +21,10 @@ def iter_files(s3_client: Client, bucket: str, prefix: str = None, file_ext: str
     Yields:
         The S3 key (path) of each parquet file found (str).
     """
+
+    # Default argument values
     file_ext = file_ext or '.parquet'
+    prefix = prefix or ''
 
     # Use a paginator to list objects
     # https://boto3.amazonaws.com/v1/documentation/api/latest/guide/paginators.html

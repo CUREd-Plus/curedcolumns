@@ -26,7 +26,7 @@ pip install --editable .[test]
 
 ### Remote machine
 
-Install from GitHub
+Install from GitHub using [pip install](https://pip.pypa.io/en/stable/cli/pip_install/):
 
 ```bash
 pip install --force git+https://github.com/CUREd-Plus/curedcolumns.git
