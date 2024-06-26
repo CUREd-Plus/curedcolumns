@@ -6,7 +6,7 @@ import os
 
 import boto3
 
-from lsfields.list_parquet_files import list_parquet_files
+from curedcolumns.list_parquet_files import list_parquet_files
 
 DESCRIPTION = """
 This will list all the field names for all the data sets

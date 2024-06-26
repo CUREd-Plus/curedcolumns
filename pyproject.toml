@@ -3,7 +3,7 @@ requires = ["setuptools >= 61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "lsfields"
+name = "curedcolumns"
 dynamic = ["version"]
 dependencies = [
   "boto3==1.*",
@@ -11,9 +11,9 @@ dependencies = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "lsfields.__version__"}
+version = {attr = "curedcolumns.__version__"}
 
 # Executable scripts
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
 [project.scripts]
-lsfields = "lsfields.__main__:main"
+curedcolumns = "curedcolumns.__main__:main"
