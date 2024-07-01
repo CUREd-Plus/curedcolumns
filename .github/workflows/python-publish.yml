@@ -13,6 +13,7 @@ on:
 
 jobs:
   build:
+    name: Build a distribution package
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     runs-on: ubuntu-22.04
     steps:
@@ -25,7 +26,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install --user build
       - name: Build package
+        # https://build.pypa.io/
         run: python -m build
+      # https://github.com/marketplace/actions/upload-a-build-artifact
       - uses: actions/upload-artifact@v4
         with:
           path: dist/
@@ -43,7 +46,6 @@ jobs:
       - name: Get distributable files
         uses: actions/download-artifact@v4
         with:
-          name: python-package-distributions
           path: dist/
       - name: Publish package to Test PyPI
         uses: pypa/gh-action-pypi-publish@v1.9.0
