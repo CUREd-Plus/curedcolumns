@@ -19,10 +19,17 @@ test = [
     "moto[s3]==5.*"
 ]
 
-[tool.setuptools.dynamic]
-version = { attr = "curedcolumns.__version__" }
-
 # Executable scripts
 # https://packaging.python.org/en/latest/guides/writing-pyproject-toml/#creating-executable-scripts
 [project.scripts]
 curedcolumns = "curedcolumns.__main__:main"
+
+[project.urls]
+Homepage = "https://www.sheffield.ac.uk/data-connect"
+Bug_Tracker = "https://github.com/CUREd-Plus/curedcolumns/issues"
+Documentation = "https://github.com/CUREd-Plus/curedcolumns/blob/main/README.md"
+Repository = "https://github.com/CUREd-Plus/curedcolumns"
+Changelog = "https://github.com/CUREd-Plus/curedcolumns/releases"
+
+[tool.setuptools.dynamic]
+version = { attr = "curedcolumns.__version__" }
