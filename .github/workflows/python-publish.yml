@@ -57,6 +57,8 @@ jobs:
         uses: pypa/gh-action-pypi-publish@v1.9.0
         with:
           repository-url: https://test.pypi.org/legacy/
+          verbose: true
+          skip-existing: true
 
   publish-to-pypi:
     name: Publish to PyPI
