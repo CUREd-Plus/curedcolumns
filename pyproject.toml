@@ -10,6 +10,8 @@ dependencies = [
     "pyarrow==16.*",
     "boto3-type-annotations==0.*"
 ]
+readme = "README.md"
+license = { file = "LICENSE" }
 
 [project.optional-dependencies]
 test = [
