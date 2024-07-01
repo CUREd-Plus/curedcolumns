@@ -13,16 +13,17 @@ on:
 
 jobs:
   build:
-    name: Build a distribution package
+    name: Build the distribution package
     # https://github.com/actions/runner-images?tab=readme-ov-file#available-images
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.12'
       - name: Install dependencies
         run: |
+          python --version
           python -m pip install --upgrade pip
           pip install --user build
       - name: Build package
@@ -31,6 +32,7 @@ jobs:
       # https://github.com/marketplace/actions/upload-a-build-artifact
       - uses: actions/upload-artifact@v4
         with:
+          name: python-package-distributions
           path: dist/
           if-no-files-found: error
 
@@ -46,8 +48,10 @@ jobs:
       id-token: write
     steps:
       - name: Get distributable files
+        # https://github.com/marketplace/actions/download-a-build-artifact
         uses: actions/download-artifact@v4
         with:
+          name: python-package-distributions
           path: dist/
       - name: Publish package to Test PyPI
         uses: pypa/gh-action-pypi-publish@v1.9.0
