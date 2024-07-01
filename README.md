@@ -26,4 +26,4 @@ curedcolumns --profile clean s3://my_bucket.aws.com
 
 # Development
 
-See [CONTRIBUTING.md](./CONTRIBUTING.md).
+See [CONTRIBUTING.md](https://github.com/CUREd-Plus/curedcolumns/blob/main/CONTRIBUTING.md).
