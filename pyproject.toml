@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "curedcolumns"
+description = "CUREd+ metadata tool: generates a list of all the columns in every table in the database."
 dynamic = ["version"]
 dependencies = [
     "boto3==1.*",
