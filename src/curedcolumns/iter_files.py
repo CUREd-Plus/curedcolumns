@@ -1,5 +1,5 @@
 import logging
-from pathlib import PosixPath
+from pathlib import Path
 from typing import Generator
 
 from boto3_type_annotations.s3 import Client
@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def iter_files(s3_client: Client, bucket: str, prefix: str = None, file_ext: str = None, **kwargs) -> Generator[
-    PosixPath, None, None]:
+    Path, None, None]:
     """
     This function yields the S3 key (path) of parquet files in an S3 bucket as a generator.
 
@@ -36,6 +36,6 @@ def iter_files(s3_client: Client, bucket: str, prefix: str = None, file_ext: str
 
         # Loop through S3 objects (files)
         for obj in page.get("Contents", set()):
-            s3_key = PosixPath(obj["Key"])
+            s3_key = Path(obj["Key"])
             if s3_key.suffix == file_ext:
                 yield s3_key
