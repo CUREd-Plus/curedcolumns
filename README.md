@@ -27,7 +27,7 @@ curedcolumns --profile $AWS_PROFILE $AWS_BUCKET
 You should create an AWS profile using the [`aws configure`](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-configure.html) command.
 
 ```bash
-aws configigure --profile $AWS_PROFILE
+aws configure --profile $AWS_PROFILE
 ```
 
 To view the command line options:
