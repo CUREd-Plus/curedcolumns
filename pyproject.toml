@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "curedcolumns"
 description = "CUREd+ metadata tool: generates a list of all the columns in every table in the database."
-dynamic = ["version"]
+version = "0.1.1"
 dependencies = [
     "boto3==1.*",
     "pyarrow==16.*",
@@ -31,6 +31,3 @@ Bug_Tracker = "https://github.com/CUREd-Plus/curedcolumns/issues"
 Documentation = "https://github.com/CUREd-Plus/curedcolumns/blob/main/README.md"
 Repository = "https://github.com/CUREd-Plus/curedcolumns"
 Changelog = "https://github.com/CUREd-Plus/curedcolumns/releases"
-
-[tool.setuptools.dynamic]
-version = { attr = "curedcolumns.__version__" }
