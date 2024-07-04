@@ -91,10 +91,11 @@ def bucket(s3_client):
 
 
 @pytest.yield_fixture
-def key(s3_client, bucket):
+def keys(s3_client, bucket):
     """
     Create dummy files on AWS S3.
     """
+    keys = set()
     for file_name in FILENAMES:
         # Generate synthetic data
         table = generate_table()
@@ -107,4 +108,7 @@ def key(s3_client, bucket):
         key = f"hes_apc/hes_apc/data/{file_name}"
         response = s3_client.put_object(Bucket=bucket, Body=buffer.getvalue(), Key=key)
 
-        yield response.get('Key')
+        keys.add(response.get('Key'))
+    yield keys
+
+    s3_client.delete_objects(Bucket=bucket, Delete={'Objects': keys})

@@ -4,7 +4,7 @@ import pytest
 import curedcolumns
 
 
-def test_get_s3_parquet_schema(session, bucket, key):
+def test_get_s3_parquet_schema(session, bucket, keys):
     schema = curedcolumns.get_s3_parquet_schema(session=session, bucket=bucket, key=key)
 
     assert isinstance(schema, pyarrow.Schema)
