@@ -87,6 +87,10 @@ def main():
     # if args.output is None
     except AttributeError:
         pass
+    except FileExistsError:
+        logger.warning("Output file '%s' already exists", args.output)
+        logger.info("Use --force to overwrite")
+        exit()
 
     # Output to CSV format
     writer = csv.DictWriter(output, fieldnames=HEADERS)
