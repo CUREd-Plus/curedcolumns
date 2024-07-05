@@ -52,6 +52,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
     parser.add_argument('-d', '--delimiter', default=',', help='Column separator character')
     parser.add_argument('-o', '--output', type=pathlib.Path, help='Output file path. Default: screen')
+    parser.add_argument('-f', '--force', action='store_true', help='Overwrite output file if it already exists')
 
     return parser.parse_args()
 
@@ -77,7 +78,11 @@ def main():
     output = sys.stdout
     # If a file is selected, open it for writing
     try:
-        output = args.output.open('a')
+        # Default: open for exclusive creation, failing if the file already exists
+        # https://docs.python.org/3/library/functions.html#open
+        mode = 'w' if args.force else 'x'
+        output = args.output.open(mode)
+    # if args.output is None
     except AttributeError:
         pass
 
