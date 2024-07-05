@@ -44,7 +44,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('--version', action='version', version='%(prog)s ' + curedcolumns.__version__,
                         help='Show the version number of this tool')
-    parser.add_argument('-l', '--loglevel', default='WARNING')
+    parser.add_argument('-l', '--loglevel', default='INFO')
     parser.add_argument('bucket', type=bucket_str, help='S3 bucket location URI')
     parser.add_argument('--prefix', required=False, default='',
                         help='Limits the response to keys that begin with the specified prefix.')
@@ -61,7 +61,7 @@ def main():
     args = get_args()
     logging.basicConfig(
         format="%(name)s:%(asctime)s:%(levelname)s:%(message)s",
-        level=logging.INFO if args.verbose else args.loglevel
+        level=logging.DEBUG if args.verbose else args.loglevel
     )
 
     # Connect to AWS
