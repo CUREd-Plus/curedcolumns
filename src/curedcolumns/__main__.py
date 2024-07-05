@@ -75,7 +75,6 @@ def main():
     data_paths: set[pathlib.Path] = set()
 
     # Select output (write to screen or target file)
-    output = sys.stdout
     # If a file is selected, open it for writing
     try:
         # Default: open for exclusive creation, failing if the file already exists
@@ -86,7 +85,8 @@ def main():
         logger.info("Writing to '%s'", args.output)
     # if args.output is None
     except AttributeError:
-        pass
+        # Default: Write to screen
+        output = sys.stdout
     except FileExistsError:
         logger.warning("Output file '%s' already exists", args.output)
         logger.info("Use --force to overwrite")
