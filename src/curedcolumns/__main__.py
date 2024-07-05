@@ -81,7 +81,9 @@ def main():
         # Default: open for exclusive creation, failing if the file already exists
         # https://docs.python.org/3/library/functions.html#open
         mode = 'w' if args.force else 'x'
+        args.output.parent.mkdir(exist_ok=True, parents=True)
         output = args.output.open(mode)
+        logger.info("Writing to '%s'", args.output)
     # if args.output is None
     except AttributeError:
         pass
@@ -129,6 +131,10 @@ def main():
                 data_type=column.type
             )
             writer.writerow(row)
+
+    # Tell the user that the output file was written
+    if args.output:
+        logger.info("Wrote '%s'", args.output)
 
 
 if __name__ == '__main__':
