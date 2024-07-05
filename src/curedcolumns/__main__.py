@@ -35,17 +35,25 @@ def bucket_str(bucket: str) -> str:
 
 
 def get_args() -> argparse.Namespace:
+    """
+    Set up command-line arguments
+    """
+
     parser = argparse.ArgumentParser(description=DESCRIPTION)
+
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('--version', action='version', version='%(prog)s ' + curedcolumns.__version__,
                         help='Show the version number of this tool')
-    parser.add_argument('-l', '--loglevel', default='WARNING')
+    parser.add_argument('-l', '--loglevel', default='INFO')
     parser.add_argument('bucket', type=bucket_str, help='S3 bucket location URI')
     parser.add_argument('--prefix', required=False, default='',
                         help='Limits the response to keys that begin with the specified prefix.')
     parser.add_argument('--no-sign-request', action='store_true')
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
     parser.add_argument('-d', '--delimiter', default=',', help='Column separator character')
+    parser.add_argument('-o', '--output', type=pathlib.Path, help='Output file path. Default: screen')
+    parser.add_argument('-f', '--force', action='store_true', help='Overwrite output file if it already exists')
+
     return parser.parse_args()
 
 
@@ -53,7 +61,7 @@ def main():
     args = get_args()
     logging.basicConfig(
         format="%(name)s:%(asctime)s:%(levelname)s:%(message)s",
-        level=logging.INFO if args.verbose else args.loglevel
+        level=logging.DEBUG if args.verbose else args.loglevel
     )
 
     # Connect to AWS
@@ -66,8 +74,27 @@ def main():
     # Store the data directories we've already looked at
     data_paths: set[pathlib.Path] = set()
 
+    # Select output (write to screen or target file)
+    # If a file is selected, open it for writing
+    try:
+        # Default: open for exclusive creation, failing if the file already exists
+        # https://docs.python.org/3/library/functions.html#open
+        mode = 'w' if args.force else 'x'
+        args.output.parent.mkdir(exist_ok=True, parents=True)
+        output = args.output.open(mode)
+        logger.info("Writing to '%s'", args.output)
+    # if args.output is None
+    except AttributeError:
+        # Default: Write to screen
+        output = sys.stdout
+    except FileExistsError:
+        logger.warning("Output file '%s' already exists", args.output)
+        logger.info("Use --force to overwrite")
+        exit()
+
+    # Output to CSV format
+    writer = csv.DictWriter(output, fieldnames=HEADERS)
     # Show CSV header
-    writer = csv.DictWriter(sys.stdout, fieldnames=HEADERS)
     writer.writeheader()
 
     # Iterate over all files
@@ -108,6 +135,10 @@ def main():
                 data_type=column.type
             )
             writer.writerow(row)
+
+    # Tell the user that the output file was written
+    if args.output:
+        logger.info("Wrote '%s'", args.output)
 
 
 if __name__ == '__main__':
