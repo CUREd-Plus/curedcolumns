@@ -3,6 +3,7 @@ Testing with Moto (mock AWS for boto3)
 https://docs.getmoto.org/en/latest/docs/getting_started.html#recommended-usage
 """
 import io
+import logging
 import os
 import random
 import string
@@ -24,8 +25,10 @@ CREDENTIALS = dict(
 BUCKET = "test-bucket"
 FILENAMES = {'partition_1.parquet', 'partition_2.parquet', 'partition_3.parquet'}
 
+logger = logging.getLogger(__name__)
 
-@pytest.fixture(scope="function")
+
+@pytest.fixture
 def aws_credentials():
     """
     Mocked AWS Credentials for moto.
@@ -34,23 +37,22 @@ def aws_credentials():
     os.environ.update(CREDENTIALS)
 
 
-@pytest.fixture(scope="function")
-def s3_client(session):
-    """
-    Mock AWS S3 Client
-    """
-
-    with moto.mock_aws():
-        yield session.client('s3')
-
-
-@pytest.fixture(scope="function")
+@pytest.fixture
 def session(aws_credentials):
     """
     Mock AWS session
     """
     with moto.mock_aws():
         yield boto3.Session()
+
+
+@pytest.fixture
+def s3_client(session):
+    """
+    Mock AWS S3 Client
+    """
+
+    yield session.client('s3')
 
 
 def generate_table(num_rows: int = 100) -> pyarrow.Table:
@@ -79,36 +81,38 @@ def bucket(s3_client):
     Create a test bucket with test data.
     """
 
-    with moto.mock_aws():
-        # Create dummy bucket
-        s3_client.create_bucket(
-            Bucket=BUCKET,
-            CreateBucketConfiguration={
-                'LocationConstraint': CREDENTIALS['AWS_DEFAULT_REGION']}
-        )
+    # Create dummy bucket
+    response = s3_client.create_bucket(
+        Bucket=BUCKET,
+        CreateBucketConfiguration={
+            'LocationConstraint': CREDENTIALS['AWS_DEFAULT_REGION']}
+    )
+    logger.debug(response)
 
-    return BUCKET
+    yield BUCKET
 
 
-@pytest.yield_fixture
+@pytest.fixture
 def keys(s3_client, bucket):
     """
     Create dummy files on AWS S3.
     """
-    keys = set()
-    for file_name in FILENAMES:
-        # Generate synthetic data
-        table = generate_table()
-        buffer = io.BytesIO()
-        with pyarrow.parquet.ParquetWriter(buffer, table.schema) as writer:
-            writer.write_table(table)
-        buffer.seek(0)
+    keys_: set[str] = set()
 
+    # Generate synthetic data
+    table = generate_table()
+    buffer = io.BytesIO()
+    with pyarrow.parquet.ParquetWriter(buffer, table.schema) as writer:
+        writer.write_table(table)
+    buffer.seek(0)
+
+    for file_name in FILENAMES:
         # Create S3 blob
         key = f"hes_apc/hes_apc/data/{file_name}"
         response = s3_client.put_object(Bucket=bucket, Body=buffer.getvalue(), Key=key)
+        buffer.seek(0)
+        logger.debug(response)
 
-        keys.add(response.get('Key'))
-    yield keys
+        keys_.add(key)
 
-    s3_client.delete_objects(Bucket=bucket, Delete={'Objects': keys})
+    yield keys_
