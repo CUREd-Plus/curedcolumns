@@ -33,8 +33,8 @@ aws configure --profile $AWS_PROFILE
 To view the command line options:
 
 ```bash
-$ curedcolumns --help
-usage: curedcolumns [-h] [-v] [--version] [-l LOGLEVEL] [--prefix PREFIX] [--no-sign-request] [--profile PROFILE] [-d DELIMITER] bucket
+$ curedcolumns --help 
+usage: curedcolumns [-h] [-v] [--version] [-l LOGLEVEL] [--prefix PREFIX] [--no-sign-request] [--profile PROFILE] [-d DELIMITER] [-o OUTPUT] [-f] bucket
 
 List all the field names for all the data sets in a bucket on AWS S3 object storage and display the metadata in CSV format. This assumes a folder structure in this layout: <data_set_id>/<table_id>/data/*.parquet
 
@@ -51,7 +51,9 @@ options:
   --profile PROFILE     AWS profile to use
   -d DELIMITER, --delimiter DELIMITER
                         Column separator character
-
+  -o OUTPUT, --output OUTPUT
+                        Output file path. Default: screen
+  -f, --force           Overwrite output file if it already exists
 ```
 
 ## Example
