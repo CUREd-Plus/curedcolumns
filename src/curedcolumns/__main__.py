@@ -35,7 +35,12 @@ def bucket_str(bucket: str) -> str:
 
 
 def get_args() -> argparse.Namespace:
+    """
+    Set up command-line arguments
+    """
+
     parser = argparse.ArgumentParser(description=DESCRIPTION)
+
     parser.add_argument('-v', '--verbose', action='store_true')
     parser.add_argument('--version', action='version', version='%(prog)s ' + curedcolumns.__version__,
                         help='Show the version number of this tool')
@@ -46,6 +51,8 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('--no-sign-request', action='store_true')
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
     parser.add_argument('-d', '--delimiter', default=',', help='Column separator character')
+    parser.add_argument('-o', '--output', type=pathlib.Path, help='Output file path. Default: screen')
+
     return parser.parse_args()
 
 
@@ -66,8 +73,17 @@ def main():
     # Store the data directories we've already looked at
     data_paths: set[pathlib.Path] = set()
 
+    # Select output (write to screen or target file)
+    output = sys.stdout
+    # If a file is selected, open it for writing
+    try:
+        output = args.output.open('a')
+    except AttributeError:
+        pass
+
+    # Output to CSV format
+    writer = csv.DictWriter(output, fieldnames=HEADERS)
     # Show CSV header
-    writer = csv.DictWriter(sys.stdout, fieldnames=HEADERS)
     writer.writeheader()
 
     # Iterate over all files
