@@ -7,8 +7,11 @@ The CUREd+ metadata generator tool generates a list of all the columns in every 
 # Installation
 
 Ensure [Python](https://www.python.org/) is installed.
+(See [this tutorial](https://www.digitalocean.com/community/tutorials/install-python-windows-10).)
 
 Install [AWS command-line interface (CLI)](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-welcome.html).
+[Configure your access key](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-configure.html) using the
+[`aws configure`](https://docs.aws.amazon.com/cli/latest/reference/configure/) command.
 
 Install this package using the [Python package manager](https://pip.pypa.io/en/stable/):
 
@@ -21,7 +24,7 @@ pip install curedcolumns
 The basic usage of this app is to specify the AWS CLI profile and the bucket name you want to inspect.
 
 ```bash
-curedcolumns --profile $AWS_PROFILE $AWS_BUCKET
+curedcolumns --profile $AWS_PROFILE $AWS_BUCKET --output $OUTPUT_FILE
 ```
 
 You should create an AWS profile using the [`aws configure`](https://docs.aws.amazon.com/cli/v1/userguide/cli-chap-configure.html) command.
