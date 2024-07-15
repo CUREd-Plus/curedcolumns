@@ -4,6 +4,15 @@
 
 The CUREd+ metadata generator tool generates a list of all the columns in every table in the database.
 
+The data in the target bucket must be arranged in the following directory structure: `<data_set_id>/<table_id>/data/*.parquet`
+
+This script will generate a CSV file with the following columns:
+
+ * `data_set_id`
+ * `table_id`
+ * `column_name`
+ * `data_type`
+
 # Installation
 
 Ensure [Python](https://www.python.org/) is installed.
