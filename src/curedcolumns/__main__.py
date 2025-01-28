@@ -4,8 +4,8 @@ import argparse
 import csv
 import logging
 import os
-import pathlib
 import sys
+from pathlib import Path
 
 import boto3
 
@@ -51,7 +51,7 @@ def get_args() -> argparse.Namespace:
     parser.add_argument('--no-sign-request', action='store_true')
     parser.add_argument('--profile', default=AWS_PROFILE, help='AWS profile to use')
     parser.add_argument('-d', '--delimiter', default=',', help='Column separator character')
-    parser.add_argument('-o', '--output', type=pathlib.Path, help='Output file path. Default: screen')
+    parser.add_argument('-o', '--output', type=Path, help='Output file path. Default: screen')
     parser.add_argument('-f', '--force', action='store_true', help='Overwrite output file if it already exists')
 
     return parser.parse_args()
@@ -71,8 +71,8 @@ def main():
     s3_client = session.client('s3')
     'AWS S3 service client'
 
-    # Store the data directories we've already looked at
-    data_paths: set[pathlib.Path] = set()
+    # Store the tables we've already looked at
+    tables = set()
 
     # Select output (write to screen or target file)
     # If a file is selected, open it for writing
@@ -109,30 +109,19 @@ def main():
             logger.warning("Skipping '%s'", relative_path)
             continue
 
-        # Check the directory structure is correct
-        try:
-            if 'data' in {data_set_id, table_id}:
-                raise CuredFileNotFoundError(path)
-            data_path = path.parent
-            if data_path.name != 'data':
-                raise CuredFileNotFoundError(path)
-        except CuredFileNotFoundError:
-            # Describe the problem
-            logger.error("The data set or table does not exist at %s", path)
-            logger.warning("Expecting: ./<data_set_id>/<table_id>/data/*.parquet")
-            exit()
-
+        full_table_id = (data_set_id, table_id)
         # Keep track of the ones we've already looked at
-        if data_path in data_paths:
+        if full_table_id in tables:
             # If we already processed this, then skip to the next file
             continue
         else:
-            data_paths.add(data_path)
+            tables.add(full_table_id)
 
-        logger.info("Data set ID: %s\tTable ID %s", data_set_id, table_id)
+        logger.info("Table identifier: %s.%s", data_set_id, table_id)
 
         # Get column names
-        schema = curedcolumns.get_s3_parquet_schema(bucket=args.bucket, key=data_path, session=session)
+        key = Path(data_set_id) / table_id / "data"
+        schema = curedcolumns.get_s3_parquet_schema(bucket=args.bucket, key=key, session=session)
         for column in schema:
             row = dict(
                 data_set_id=data_set_id,
