@@ -100,8 +100,14 @@ def main():
     # Iterate over all files
     for path in curedcolumns.iter_files(s3_client, args.bucket, prefix=args.prefix):
         # Parse the path structure
-        # It should be /<data_set_id>/<table_id>/data/*.parquet
-        data_set_id, table_id = path.relative_to(args.prefix).parts[0:2]
+        # It should be /<data_set_id>/<table_id>/data/**/*.parquet
+        relative_path = path.relative_to(args.prefix)
+        data_set_id, table_id = relative_path.parts[0:2]
+
+        # Skip other files such as appendix ones
+        if relative_path[2] != 'data':
+            logger.warning("Skipping '%s'", relative_path)
+            continue
 
         # Check the directory structure is correct
         try:
