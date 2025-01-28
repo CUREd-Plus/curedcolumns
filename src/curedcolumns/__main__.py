@@ -106,7 +106,7 @@ def main():
 
         # Skip other files such as appendix ones
         if relative_path.parts[2] != 'data':
-            logger.warning("Skipping '%s'", relative_path)
+            logger.warning("Skipping: %s", relative_path)
             continue
 
         full_table_id = (data_set_id, table_id)
@@ -117,7 +117,7 @@ def main():
         else:
             tables.add(full_table_id)
 
-        logger.info("Table identifier: %s.%s", data_set_id, table_id)
+        logger.info("Table: %s.%s", data_set_id, table_id)
 
         # Get column names
         key = Path(data_set_id) / table_id / "data"
