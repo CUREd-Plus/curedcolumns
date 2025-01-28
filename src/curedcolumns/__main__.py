@@ -105,7 +105,7 @@ def main():
         data_set_id, table_id = relative_path.parts[0:2]
 
         # Skip other files such as appendix ones
-        if relative_path[2] != 'data':
+        if relative_path.parts[2] != 'data':
             logger.warning("Skipping '%s'", relative_path)
             continue
 
